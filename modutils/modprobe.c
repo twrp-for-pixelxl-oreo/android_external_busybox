@@ -164,6 +164,10 @@ struct module_entry { /* I'll call it ME. */
 
 #define DB_HASH_SIZE 256
 
+#if defined(ANDROID) || defined(__ANDROID__)
+#define DONT_USE_UTS_REL_FOLDER
+#endif
+
 struct globals {
 	llist_t *probes; /* MEs of module(s) requested on cmdline */
 	char *cmdline_mopts; /* module options from cmdline */

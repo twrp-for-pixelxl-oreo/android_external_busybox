@@ -483,6 +483,7 @@ libs-y		:= \
 		init/ \
 		libbb/ \
 		libpwdgrp/ \
+		libres/ \
 		loginutils/ \
 		mailutils/ \
 		miscutils/ \

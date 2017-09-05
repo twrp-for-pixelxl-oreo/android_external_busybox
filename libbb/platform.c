@@ -179,3 +179,11 @@ ssize_t FAST_FUNC getline(char **lineptr, size_t *n, FILE *stream)
 	return len;
 }
 #endif
+
+#ifndef HAVE_ISSETUGID
+int issetugid(void)
+{
+	/* for Bionic, this is sufficient */
+	return 0;
+}
+#endif

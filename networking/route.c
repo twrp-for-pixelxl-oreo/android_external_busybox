@@ -34,8 +34,11 @@
 //usage:     "\n	-A inet" IF_FEATURE_IPV6("{6}") "	Select address family"
 
 #include <sys/socket.h>
+#include <netinet/in.h>
 #include <net/route.h>
 #include <net/if.h>
+#include <linux/in6.h>
+#include <linux/ipv6_route.h>
 
 #include "libbb.h"
 #include "inet_common.h"

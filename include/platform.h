@@ -386,6 +386,8 @@ typedef unsigned smalluint;
 #define HAVE_MNTENT_H 1
 #define HAVE_NET_ETHERNET_H 1
 #define HAVE_SYS_STATFS_H 1
+#define HAVE_WAIT3 1
+#define HAVE_ISSETUGID 1
 
 #if defined(__UCLIBC__) && UCLIBC_VERSION < KERNEL_VERSION(0, 9, 32)
 # undef HAVE_STRVERSCMP
@@ -463,6 +465,31 @@ typedef unsigned smalluint;
 #  undef HAVE_NET_ETHERNET_H
 #  undef HAVE_STPCPY
 # endif
+# if __ANDROID_API__ < 8
+   /* ANDROID < 8 has no [f]dprintf at all */
+#  undef HAVE_DPRINTF
+# elif __ANDROID_API__ < 21
+   /* ANDROID < 21 has fdprintf */
+#  define dprintf fdprintf
+# else
+   /* ANDROID >= 21 has standard dprintf */
+# endif
+# if __ANDROID_API__ > 18
+#  undef HAVE_ISSETUGID
+# endif
+# if __ANDROID_API__ < 21
+#  undef HAVE_TTYNAME_R
+#  undef HAVE_GETLINE
+#  undef HAVE_STPCPY
+# else
+#  undef HAVE_WAIT3
+# endif
+# undef HAVE_MEMPCPY
+# undef HAVE_STRCHRNUL
+# undef HAVE_STRVERSCMP
+# undef HAVE_UNLOCKED_LINE_OPS
+# undef HAVE_NET_ETHERNET_H
+# undef HAVE_SETBIT
 #endif
 
 /*
@@ -526,5 +553,8 @@ extern ssize_t getline(char **lineptr, size_t *n, FILE *stream) FAST_FUNC;
 #include "android.h"
 #endif
 
+#ifndef HAVE_ISSETUGID
+extern int issetugid(void) FAST_FUNC;
+#endif
 
 #endif /* BB_PLATFORM_H */

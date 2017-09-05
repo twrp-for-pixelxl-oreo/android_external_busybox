@@ -70,7 +70,7 @@
 #include "reboot.h"
 
 #ifdef __BIONIC__
-# include "android/reboot.c"
+#include "reboot.c"
 #endif
 
 #if ENABLE_FEATURE_WTMP
@@ -144,19 +144,17 @@ int halt_main(int argc UNUSED_PARAM, char **argv)
 	case 1:
 		//-p for halt
 		mode[1] = strdup("-p");
-		c=2;
+		c = 2;
 		break;
 	case 2:
 		//reboot
-		#ifdef CYANOGEN_LIBREBOOT
 		if (argc > 1) {
 			mode[1] = strdup(argv[1]);
 			c = 2;
 		}
-		#endif
 		break;
 	}
-	return reboot_main(c, mode);
+	return reboot_android(c, mode);
 #endif
 
 	/* Perform action. */

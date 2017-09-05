@@ -248,6 +248,11 @@
 //applet:IF_FEATURE_BASH_IS_HUSH(APPLET_ODDNAME(bash, hush, BB_DIR_BIN, BB_SUID_DROP, bash))
 
 //kbuild:lib-$(CONFIG_HUSH) += hush.o match.o shell_common.o
+//kbuild:lib-$(CONFIG_HUSH) += glob.o sigisemptyset.o
+//kbuild:lib-$(CONFIG_SH_IS_HUSH) += hush.o match.o shell_common.o
+//kbuild:lib-$(CONFIG_SH_IS_HUSH) += glob.o sigisemptyset.o
+//kbuild:lib-$(CONFIG_BASH_IS_HUSH) += hush.o match.o shell_common.o
+//kbuild:lib-$(CONFIG_BASH_IS_HUSH) += glob.o sigisemptyset.o
 //kbuild:lib-$(CONFIG_HUSH_RANDOM_SUPPORT) += random.o
 
 /* -i (interactive) and -s (read stdin) are also accepted,
@@ -260,8 +265,35 @@
 //usage:#define hush_full_usage "\n\n"
 //usage:	"Unix shell interpreter"
 
-//usage:#define msh_trivial_usage hush_trivial_usage
-//usage:#define msh_full_usage hush_full_usage
+#if !(defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__) \
+	|| defined(__APPLE__) \
+    )
+# include <malloc.h>   /* for malloc_trim */
+#endif
+#include "glob.h"
+/* #include <dmalloc.h> */
+#if ENABLE_HUSH_CASE
+# include <fnmatch.h>
+#endif
+#include <sys/utsname.h> /* for setting $HOSTNAME */
+
+#include "busybox.h"  /* for APPLET_IS_NOFORK/NOEXEC */
+#include "unicode.h"
+#include "shell_common.h"
+#include "math.h"
+#include "match.h"
+#if ENABLE_HUSH_RANDOM_SUPPORT
+# include "random.h"
+#else
+# define CLEAR_RANDOM_T(rnd) ((void)0)
+#endif
+#ifndef F_DUPFD_CLOEXEC
+# define F_DUPFD_CLOEXEC F_DUPFD
+#endif
+#ifndef PIPE_BUF
+# define PIPE_BUF 4096  /* amount of buffering in a pipe */
+#endif
+
 
 //usage:#if ENABLE_FEATURE_SH_IS_HUSH
 //usage:# define sh_trivial_usage hush_trivial_usage
