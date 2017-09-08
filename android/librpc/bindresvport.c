@@ -30,6 +30,8 @@
  * Copyright (c) 1987 by Sun Microsystems, Inc.
  */
 
+#ifndef BIONIC_L
+
 #define __FORCE_GLIBC
 #include <features.h>
 
@@ -93,3 +95,5 @@ bindresvport (int sd, struct sockaddr_in *sin)
   return res;
 }
 libc_hidden_def(bindresvport)
+
+#endif /* BIONIC_L */

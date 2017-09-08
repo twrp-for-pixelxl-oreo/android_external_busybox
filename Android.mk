@@ -1,9 +1,16 @@
 LOCAL_PATH := $(call my-dir)
 BB_PATH := $(LOCAL_PATH)
 
-# Bionic Branches Switches (GB/ICS/L)
-BIONIC_ICS := false
-BIONIC_L := true
+# Bionic Branches Switches
+BIONIC_I := $(shell test $(PLATFORM_SDK_VERSION) -ge 14 && echo true)
+BIONIC_L := $(shell test $(PLATFORM_SDK_VERSION) -ge 22 && echo true)
+BIONIC_N := $(shell test $(PLATFORM_SDK_VERSION) -ge 24 && echo true)
+BIONIC_O := $(shell test $(PLATFORM_SDK_VERSION) -ge 26 && echo true)
+BIONIC_CFLAGS := \
+	$(if $(BIONIC_I),-DBIONIC_ICS) \
+	$(if $(BIONIC_L),-DBIONIC_L) \
+	$(if $(BIONIC_N),-DBIONIC_N -D_GNU_SOURCE) \
+	$(if $(BIONIC_O),-DBIONIC_O) \
 
 # Make a static library for regex.
 include $(CLEAR_VARS)
@@ -19,9 +26,7 @@ LOCAL_SRC_FILES := $(shell cat $(BB_PATH)/android/librpc.sources)
 LOCAL_C_INCLUDES := $(BB_PATH)/android/librpc
 LOCAL_MODULE := libuclibcrpc
 LOCAL_CFLAGS += -fno-strict-aliasing
-ifeq ($(BIONIC_L),true)
-LOCAL_CFLAGS += -DBIONIC_ICS -DBIONIC_L
-endif
+LOCAL_CFLAGS += $(BIONIC_CFLAGS)
 include $(BUILD_STATIC_LIBRARY)
 
 #####################################################################
@@ -69,7 +74,7 @@ BUSYBOX_C_INCLUDES = \
 	$(BB_PATH)/android/regex \
 	$(BB_PATH)/android/librpc
 
-BUSYBOX_CFLAGS = \
+BUSYBOX_CFLAGS := $(BIONIC_CFLAGS) \
 	-Werror=implicit -Wno-clobbered \
 	-DNDEBUG \
 	-fno-strict-aliasing \
@@ -77,17 +82,7 @@ BUSYBOX_CFLAGS = \
 	-D'CONFIG_DEFAULT_MODULES_DIR="$(KERNEL_MODULES_DIR)"' \
 	-D'BB_VER="$(strip $(shell $(SUBMAKE) kernelversion)) $(BUSYBOX_SUFFIX)"' -DBB_BT=AUTOCONF_TIMESTAMP
 
-ifeq ($(BIONIC_L),true)
-    BUSYBOX_CFLAGS += -DBIONIC_L
-    BUSYBOX_AFLAGS += -DBIONIC_L
-    # include changes for ICS/JB/KK
-    BIONIC_ICS := true
-endif
-
-ifeq ($(BIONIC_ICS),true)
-    BUSYBOX_CFLAGS += -DBIONIC_ICS
-endif
-
+BUSYBOX_AFLAGS := $(BIONIC_CFLAGS)
 
 # Build the static lib for the recovery tool
 

@@ -453,12 +453,14 @@ typedef unsigned smalluint;
 #endif
 
 #if defined(ANDROID) || defined(__ANDROID__)
-# undef HAVE_DPRINTF
-# undef HAVE_STRCHRNUL
+# ifndef BIONIC_N
+#  undef HAVE_STRCHRNUL
+# endif
 # undef HAVE_STRVERSCMP
 # undef HAVE_UNLOCKED_LINE_OPS
-# undef HAVE_NET_ETHERNET_H
 # ifndef BIONIC_L
+#  undef HAVE_DPRINTF
+#  undef HAVE_NET_ETHERNET_H
 #  undef HAVE_STPCPY
 # endif
 #endif
