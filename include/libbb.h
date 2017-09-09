@@ -127,7 +127,7 @@
 #elif defined __APPLE__
 # include <netinet/in.h>
 #else
-# include <arpa/inet.h>
+# include <netinet/in.h>
 # if !defined(__socklen_t_defined) && !defined(_SOCKLEN_T_DECLARED)
 /* We #define socklen_t *after* includes, otherwise we get
  * typedef redefinition errors from system headers

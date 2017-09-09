@@ -82,6 +82,7 @@
 #include <mntent.h>
 #include <syslog.h>
 #include <sys/mount.h>
+#include <netinet/in.h>
 // Grab more as needed from util-linux's mount/mount_constants.h
 #ifndef MS_DIRSYNC
 # define MS_DIRSYNC     (1 << 7) // Directory modifications are synchronous

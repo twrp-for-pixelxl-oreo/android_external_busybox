@@ -59,6 +59,7 @@ bindresvport (int sd, struct sockaddr_in *sin)
   struct sockaddr_in myaddr;
   int i;
 
+#define IPPORT_RESERVED  1024
 #define STARTPORT 600
 #define ENDPORT (IPPORT_RESERVED - 1)
 #define NPORTS	(ENDPORT - STARTPORT + 1)
