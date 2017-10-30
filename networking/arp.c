@@ -34,7 +34,7 @@
 #include "libbb.h"
 #include "inet_common.h"
 
-#include <arpa/inet.h>
+#include <netinet/in.h>
 #include <net/if.h>
 #include <net/if_arp.h>
 #include <netinet/ether.h>
